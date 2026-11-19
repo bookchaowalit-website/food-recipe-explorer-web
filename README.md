@@ -34,6 +34,8 @@ scan on every push and PR to `main`.
 
 - `lib/recipes.ts`: the sample recipes plus `findRecipe`, `ingredientName`, `swapCount`, `prepNote` and
   `stepCounter` (used by the page).
-- `app/page.tsx`: the recipe desk (client component).
+- `app/page.tsx`: the recipe index; `app/recipes/[id]/page.tsx`: one static page per recipe. Views live in
+  `components/recipe-pages.tsx` on the Reader shell (`READER.md`); `components/recipe-board.tsx` is the only
+  client piece (the pantry-swap toggle). `/more-projects` redirects (308) to https://bookchaowalit.com/.
 - `lib/sentry.ts` + `instrumentation*.ts`: error reporting to Sentry, errors only, personal data stripped; off when
   `NEXT_PUBLIC_SENTRY_DSN` is unset.

@@ -33,3 +33,13 @@ export function prepNote(recipe: Recipe, stepIndex: number, swapOn: boolean): st
 export function stepCounter(stepIndex: number, total: number): string {
   return `${String(stepIndex + 1).padStart(2, "0")} / ${total}`;
 }
+
+/** Short tags from the origin line ("pantry / one pot" → ["pantry", "one pot"]). */
+export function originTags(recipe: Recipe): string[] {
+  return recipe.origin.split("/").map((part) => part.trim()).filter(Boolean);
+}
+
+/** The recipes before and after one in the index order, for previous / next links. */
+export function recipeIndex(id: string): number {
+  return recipes.findIndex((item) => item.id === id);
+}

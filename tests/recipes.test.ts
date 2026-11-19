@@ -41,3 +41,12 @@ describe("stepCounter", () => {
     expect(stepCounter(11, 12)).toBe("12 / 12");
   });
 });
+
+describe("index helpers", () => {
+  it("splits the origin into tags and finds a recipe's position", async () => {
+    const { originTags, recipeIndex, recipes } = await import("@/lib/recipes");
+    expect(originTags(recipes[0])).toEqual(["pantry", "one pot"]);
+    expect(recipeIndex("coconut-lentils")).toBe(2);
+    expect(recipeIndex("nope")).toBe(-1);
+  });
+});
