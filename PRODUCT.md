@@ -55,3 +55,10 @@ operate
   until the next deploy of `main` after the quota resets.
 - `NEXT_PUBLIC_SENTRY_DSN` is set on the Vercel project (Sentry project `food-recipe-explorer-web`, org `personal-yu0`); it takes effect
   with that next deploy.
+
+## Known limits
+
+- Step selection and the `02 / 3` step counter were dropped when the recipe page moved onto the Reader
+  shell (6c02679): the method is a plain numbered list, so "Selecting a prep step" and "the counter shows
+  the step number" above no longer hold. Restoring a selectable current step is an owner decision
+  (Codex review of fa84963, 2026-11-20).
