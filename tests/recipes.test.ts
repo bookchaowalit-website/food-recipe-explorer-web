@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { SWAP_NOTE, findRecipe, ingredientName, prepNote, recipes, stepCounter, swapCount } from "@/lib/recipes";
+import { SWAP_NOTE, findRecipe, ingredientName, prepNote, recipes, stepCounter, stepNote, swapCount } from "@/lib/recipes";
 
 const tomato = findRecipe("tomato-rice");
 
@@ -48,5 +48,15 @@ describe("index helpers", () => {
     expect(originTags(recipes[0])).toEqual(["pantry", "one pot"]);
     expect(recipeIndex("coconut-lentils")).toBe(2);
     expect(recipeIndex("nope")).toBe(-1);
+  });
+});
+
+describe("stepNote", () => {
+  it("uses the swapped wording only while swaps are on and the step has one", () => {
+    const simmer = findRecipe("coconut-lentils").steps[1];
+    expect(stepNote(simmer, false)).toContain("coconut milk");
+    expect(stepNote(simmer, true)).toContain("plain yoghurt");
+    const dress = findRecipe("miso-noodles").steps[1];
+    expect(stepNote(dress, true)).toBe(dress.note);
   });
 });
