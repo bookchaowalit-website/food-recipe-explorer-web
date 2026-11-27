@@ -14,20 +14,23 @@ flowchart TD
   INDEX --> OPEN["visitor opens a card"]
   OPEN --> ROUTE["GET /recipes/id : static page per recipe, generateStaticParams, dynamicParams = false"]
   ROUTE --> VALID{"id is one of the 3 recipes?"}
-  VALID -->|no| NF["404 notFound"]
+  VALID -->|"no: Next answers 404 at routing (dynamicParams = false); notFound() in the page is only a fallback"| NF["404"]
   VALID -->|yes| BOARD["RecipePage: ingredients, method as a numbered list, previous and next pager"]
   BOARD --> TOGGLE["Use N pantry swaps: RecipeBoard toggles swapOn in client state"]
-  TOGGLE --> SWAP["ingredientName and stepNote show substitutes; step 2 gets the swap note"]
+  TOGGLE -->|"swapOn = true"| SWAP["ingredientName and stepNote show substitutes; step 2 gets the swap note"]
+  TOGGLE -->|"swapOn = false (press again)"| ORIG["original ingredient names and steps, step 2 swap note hidden"]
   SWAP --> TOGGLE
+  ORIG --> TOGGLE
   BOARD --> PAGER["pager links to the neighbouring recipe"]
   PAGER --> ROUTE
-  INDEX -.->|"runtime error, only if NEXT_PUBLIC_SENTRY_DSN set"| SENTRY["Sentry, errors only, scrubEvent strips request, user, query strings"]
+  INDEX -.->|"browser runtime error on any page incl. recipe pages, only if NEXT_PUBLIC_SENTRY_DSN set"| SENTRY["Sentry, errors only, scrubEvent strips request, user, query strings"]
+  SRV["server request error: onRequestError = captureRequestError"] -.-> SENTRY
   VERCEL --> SEO["sitemap.xml lists / and each recipe; robots.txt disallows /api/"]
 ```
 
 Sources: `app/page.tsx`, `app/recipes/[id]/page.tsx`, `components/recipe-pages.tsx`, `components/recipe-board.tsx`, `lib/recipes.ts`, `lib/site.ts`, `lib/sentry.ts`, `next.config.ts`, `PRODUCT.md`
 
-ข้อเท็จจริงจากโค้ด: ไม่มี API route, storage หรือ network call ของตัวเอง; สถานะ swap ไม่ถูกเก็บ (รีโหลดแล้วปิด). วิธีทำเป็น numbered list ธรรมดา ไม่มีการเลือกขั้นหรือตัวนับ `02 / 3` (ตาม PRODUCT.md §Known limits; `stepCounter` และ `prepNote` ยังอยู่ใน `lib/recipes.ts` แต่หน้าไม่เรียก). [ต้องยืนยัน] สถานะ deploy ปัจจุบัน (PRODUCT.md บันทึกเมื่อ 2026-10-23 ว่า commit ใหม่ชนข้อจำกัด deploy ต่อวัน).
+ข้อเท็จจริงจากโค้ด: ไม่มี API route, storage หรือ network call ของตัวเอง (ยกเว้นรายงานข้อผิดพลาดไป Sentry); สถานะ swap ไม่ถูกเก็บ (รีโหลดแล้วปิด). วิธีทำเป็น numbered list ธรรมดา ไม่มีการเลือกขั้นหรือตัวนับ `02 / 3` (ตาม PRODUCT.md §Known limits; `stepCounter` และ `prepNote` ยังอยู่ใน `lib/recipes.ts` แต่หน้าไม่เรียก). [ต้องยืนยัน] สถานะ deploy ปัจจุบัน (PRODUCT.md บันทึกเมื่อ 2026-10-23 ว่า commit ใหม่ชนข้อจำกัด deploy ต่อวัน).
 
 ## To-Be
 
